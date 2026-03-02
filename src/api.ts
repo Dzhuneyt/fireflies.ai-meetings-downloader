@@ -138,13 +138,24 @@ export async function fetchTranscript(
 
 /**
  * Derives file extension from content-type header.
- * e.g. "audio/mp4" -> ".mp4", "video/webm" -> ".webm"
+ * Falls back to the URL's own extension when the content-type is
+ * generic (e.g. application/octet-stream).
  */
-function extensionFromContentType(contentType: string | null): string {
-  if (!contentType) return ".bin";
-  const sub = contentType.split("/")[1]?.split(";")[0]?.trim();
-  if (!sub) return ".bin";
-  return `.${sub}`;
+function extensionFromContentType(
+  contentType: string | null,
+  url: string,
+): string {
+  if (contentType && contentType !== "application/octet-stream") {
+    const sub = contentType.split("/")[1]?.split(";")[0]?.trim();
+    if (sub) return `.${sub}`;
+  }
+
+  // Fall back to the extension from the URL path (strip query string first)
+  const pathname = new URL(url).pathname;
+  const match = pathname.match(/\.(\w+)$/);
+  if (match) return `.${match[1]}`;
+
+  return ".bin";
 }
 
 export async function downloadMedia(
@@ -161,6 +172,7 @@ export async function downloadMedia(
 
   const ext = extensionFromContentType(
     response.headers.get("content-type"),
+    url,
   );
   const destPath = destPathWithoutExt + ext;
 
