@@ -2,6 +2,9 @@
 
 Pull your entire Fireflies.ai meeting catalog to your local filesystem.
 
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/8c2a53a5-4bda-4fee-b33b-fea99594290d" />
+
+
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) v18 or later (LTS recommended)
