@@ -16,7 +16,7 @@ npm install    # or: pnpm install / yarn install
 ## Getting Your API Key
 
 1. Log in to [Fireflies.ai](https://app.fireflies.ai/)
-2. Go to **Settings → API & Integrations** (or visit `app.fireflies.ai/api-settings`)
+2. Go to **Settings → Developer Settings** (or visit `app.fireflies.ai/settings`)
 3. Copy your API key
 
 ## Usage
