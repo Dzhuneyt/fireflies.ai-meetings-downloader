@@ -96,4 +96,13 @@ If a run is interrupted (Ctrl+C, network error), just run it again — it picks 
 
 ## Rate Limits
 
-The Fireflies API allows 60 requests per minute. The tool automatically paces itself with a 1.2-second delay between requests. For large accounts with hundreds of meetings, the initial download may take a while.
+The Fireflies API enforces different rate limits depending on your plan:
+
+| Plan | Limit |
+|------|-------|
+| Free / Pro | **50 requests per day** |
+| Business / Enterprise | **60 requests per minute** |
+
+The tool paces itself with a 1.2-second delay between requests, which fits within the Business/Enterprise limit. **If you are on the Free or Pro plan**, you will likely exceed the 50 requests/day cap during a single run — each meeting requires at least one API call. If you have more than ~50 meetings, the run will need to span multiple days (the tool resumes where it left off thanks to the manifest).
+
+For the latest limits, see the [Fireflies API Limits](https://docs.fireflies.ai/fundamentals/limits) documentation.
