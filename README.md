@@ -11,8 +11,8 @@ Pull your entire Fireflies.ai meeting catalog to your local filesystem.
 ## Setup
 
 ```bash
-git clone <this-repo>
-cd fireflies.ai-meetings-extractor-local
+git clone https://github.com/Dzhuneyt/fireflies.ai-meetings-downloader.git
+cd fireflies.ai-meetings-downloader
 npm install    # or: pnpm install / yarn install
 ```
 
