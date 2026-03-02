@@ -16,7 +16,10 @@ export async function readManifest(outputDir: string): Promise<Manifest> {
   try {
     const raw = await readFile(join(outputDir, MANIFEST_FILE), "utf-8");
     return JSON.parse(raw) as Manifest;
-  } catch {
+  } catch (err) {
+    if (err instanceof SyntaxError) {
+      console.warn("Warning: .manifest.json is corrupt, starting fresh.");
+    }
     return createEmptyManifest();
   }
 }

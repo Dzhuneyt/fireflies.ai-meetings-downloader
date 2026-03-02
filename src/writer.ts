@@ -23,8 +23,8 @@ export function buildFolderName(transcript: Transcript): string {
 function buildReadableTranscript(transcript: Transcript): string {
   if (!transcript.sentences?.length) return "(no transcript available)\n";
 
-  const maxStartTime = Math.max(
-    ...transcript.sentences.map((s) => s.start_time),
+  const maxStartTime = transcript.sentences.reduce(
+    (max, s) => Math.max(max, s.start_time), 0,
   );
   const longFormat = maxStartTime >= 3600;
 

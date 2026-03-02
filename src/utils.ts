@@ -41,10 +41,10 @@ export function parseArgs(argv: string[]): CliOptions {
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
       case "--api-key":
-        options.apiKey = args[++i];
+        if (i + 1 < args.length) options.apiKey = args[++i];
         break;
       case "--output":
-        options.output = args[++i];
+        if (i + 1 < args.length) options.output = args[++i];
         break;
       case "--force":
         options.force = true;
