@@ -56,6 +56,9 @@ npx tsx src/index.ts --force
 
 # Include audio/video files (slower, uses more disk space)
 npx tsx src/index.ts --include-media
+
+# Add audio/video to already-downloaded meetings (--force to reprocess them)
+npx tsx src/index.ts --include-media --force
 ```
 
 ## Output Structure

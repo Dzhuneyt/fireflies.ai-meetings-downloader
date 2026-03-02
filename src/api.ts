@@ -30,25 +30,44 @@ async function graphqlRequest<T>(
   });
 
   if (!response.ok) {
+    let body: string;
+    try {
+      body = await response.text();
+    } catch {
+      body = "(could not read response body)";
+    }
     throw new FirefliesApiError(
-      `HTTP ${response.status}: ${response.statusText}`,
+      `HTTP ${response.status} ${response.statusText}\n  Response body: ${body}`,
     );
   }
 
-  const json = (await response.json()) as {
-    data?: T;
-    errors?: { message: string }[];
-  };
+  let rawText: string;
+  try {
+    rawText = await response.text();
+  } catch (err) {
+    throw new FirefliesApiError(`Failed to read response body: ${err}`);
+  }
+
+  let json: { data?: T; errors?: { message: string }[] };
+  try {
+    json = JSON.parse(rawText);
+  } catch {
+    throw new FirefliesApiError(
+      `Response is not valid JSON:\n  ${rawText.slice(0, 500)}`,
+    );
+  }
 
   if (json.errors?.length) {
     throw new FirefliesApiError(
-      json.errors.map((e) => e.message).join("; "),
+      `GraphQL errors: ${json.errors.map((e) => e.message).join("; ")}\n  Full response: ${rawText.slice(0, 500)}`,
       json.errors,
     );
   }
 
   if (!json.data) {
-    throw new FirefliesApiError("No data in response");
+    throw new FirefliesApiError(
+      `No data in response:\n  ${rawText.slice(0, 500)}`,
+    );
   }
 
   return json.data;
@@ -98,7 +117,7 @@ const TRANSCRIPT_QUERY = `
       sentences { speaker_name speaker_id text raw_text start_time end_time }
       summary { keywords action_items outline topics_discussed transcript_chapters }
       analytics {
-        sentiments { negative neutral positive }
+        sentiments { negative_pct positive_pct }
         speakers { name duration word_count filler_words questions words_per_minute }
       }
     }

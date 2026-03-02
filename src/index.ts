@@ -53,7 +53,14 @@ async function main(): Promise<void> {
   const manifest = await readManifest(outputDir);
 
   console.log("Fetching meeting list...");
-  const allMeetings = await listAllTranscripts(apiKey);
+  let allMeetings;
+  try {
+    allMeetings = await listAllTranscripts(apiKey);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(`Failed to fetch meeting list:\n  ${message}`);
+    process.exit(1);
+  }
   console.log(`Found ${allMeetings.length} meetings.\n`);
 
   let newCount = 0;
@@ -113,7 +120,8 @@ async function main(): Promise<void> {
       await writeManifest(outputDir, manifest);
       newCount++;
     } catch (err) {
-      console.error(`  Error: ${err}`);
+      const message = err instanceof Error ? err.message : String(err);
+      console.error(`  Error processing "${meeting.title}" (id=${meeting.id}):\n  ${message}`);
       failedCount++;
     }
 

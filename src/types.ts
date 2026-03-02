@@ -36,9 +36,8 @@ export interface SummaryData {
 }
 
 export interface Sentiment {
-  negative: number;
-  neutral: number;
-  positive: number;
+  negative_pct: number;
+  positive_pct: number;
 }
 
 export interface SpeakerAnalytics {
