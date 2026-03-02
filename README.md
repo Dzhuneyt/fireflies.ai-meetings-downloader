@@ -5,14 +5,12 @@ Pull your entire Fireflies.ai meeting catalog to your local filesystem.
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) v18 or later (LTS recommended)
-- [pnpm](https://pnpm.io/) package manager
-
 ## Setup
 
 ```bash
 git clone <this-repo>
 cd fireflies.ai-meetings-extractor-local
-pnpm install
+npm install    # or: pnpm install / yarn install
 ```
 
 ## Getting Your API Key
