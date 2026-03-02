@@ -1,0 +1,98 @@
+# Fireflies.ai Meetings Extractor
+
+Pull your entire Fireflies.ai meeting catalog to your local filesystem.
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) v18 or later (LTS recommended)
+- [pnpm](https://pnpm.io/) package manager
+
+## Setup
+
+```bash
+git clone <this-repo>
+cd fireflies.ai-meetings-extractor-local
+pnpm install
+```
+
+## Getting Your API Key
+
+1. Log in to [Fireflies.ai](https://app.fireflies.ai/)
+2. Go to **Settings → API & Integrations** (or visit `app.fireflies.ai/api-settings`)
+3. Copy your API key
+
+## Usage
+
+```bash
+# Pass the key directly
+npx tsx src/index.ts --api-key YOUR_API_KEY
+
+# Or set it as an environment variable
+export FIREFLIES_API_KEY=YOUR_API_KEY
+npx tsx src/index.ts
+
+# Or just run it — you'll be prompted to enter the key
+npx tsx src/index.ts
+```
+
+### CLI Options
+
+```
+--api-key <key>     Fireflies API key (or set FIREFLIES_API_KEY env var)
+--output <dir>      Output directory (default: ./fireflies-meetings)
+--force             Reprocess all meetings, ignoring manifest
+--include-media     Also download audio/video files (skipped by default)
+--help              Show help
+```
+
+### Examples
+
+```bash
+# Download all meetings to a custom folder
+npx tsx src/index.ts --output ~/my-meetings
+
+# Re-download everything (ignore previous progress)
+npx tsx src/index.ts --force
+
+# Include audio/video files (slower, uses more disk space)
+npx tsx src/index.ts --include-media
+```
+
+## Output Structure
+
+Meetings are organized by year-month. Each meeting gets its own folder:
+
+```
+fireflies-meetings/
+├── .manifest.json              # Tracks progress (don't delete this)
+├── 2026-03/
+│   ├── 2026-03-01_Project-Standup_abc123/
+│   │   ├── metadata.json       # Meeting info (participants, duration, links)
+│   │   ├── transcript.json     # Raw transcript data with timestamps
+│   │   ├── transcript.txt      # Human-readable transcript
+│   │   ├── summary.json        # Keywords, action items, topics
+│   │   ├── analytics.json      # Sentiment scores, speaker stats
+│   │   ├── audio.mp4           # Audio file (only with --include-media)
+│   │   └── video.mp4           # Video file (only with --include-media)
+│   └── 2026-03-05_Sprint-Review_def456/
+│       └── ...
+└── 2026-02/
+    └── ...
+```
+
+**`transcript.txt`** is the main file most people will want. It looks like:
+
+```
+[00:05] Alice: Good morning everyone, let's get started.
+[00:12] Bob: Sure, I have a few updates from yesterday.
+```
+
+## Resuming & Re-running
+
+The tool tracks which meetings have been downloaded in `.manifest.json`. If you run it again, it skips already-downloaded meetings and only fetches new ones. Use `--force` to re-download everything.
+
+If a run is interrupted (Ctrl+C, network error), just run it again — it picks up where it left off.
+
+## Rate Limits
+
+The Fireflies API allows 60 requests per minute. The tool automatically paces itself with a 1.2-second delay between requests. For large accounts with hundreds of meetings, the initial download may take a while.
