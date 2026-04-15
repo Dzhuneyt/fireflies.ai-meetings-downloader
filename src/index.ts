@@ -73,6 +73,7 @@ async function main(): Promise<void> {
     const dateStr = formatDateForLog(meeting.date);
 
     if (!options.force && isProcessed(manifest, meeting.id)) {
+      console.log(`${index} Skipping: "${meeting.title}" (${dateStr}) — already synced`);
       skippedCount++;
       continue;
     }

@@ -76,8 +76,8 @@ fireflies-meetings/
 │   │   ├── transcript.txt      # Human-readable transcript
 │   │   ├── summary.json        # Keywords, action items, topics
 │   │   ├── analytics.json      # Sentiment scores, speaker stats
-│   │   ├── audio.mp4           # Audio file (only with --include-media)
-│   │   └── video.mp4           # Video file (only with --include-media)
+│   │   ├── audio.<ext>          # Audio file (only with --include-media)
+│   │   └── video.<ext>          # Video file (only with --include-media)
 │   └── 2026-03-05_Sprint-Review_def456/
 │       └── ...
 └── 2026-02/
