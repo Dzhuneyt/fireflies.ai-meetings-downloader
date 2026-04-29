@@ -86,6 +86,7 @@ const LIST_QUERY = `
 
 export async function listAllTranscripts(
   apiKey: string,
+  mineOnly: boolean = false,
 ): Promise<TranscriptListItem[]> {
   const all: TranscriptListItem[] = [];
   let skip = 0;
@@ -94,7 +95,7 @@ export async function listAllTranscripts(
   while (true) {
     const data = await graphqlRequest<{
       transcripts: TranscriptListItem[];
-    }>(apiKey, LIST_QUERY, { limit, skip, mine: true });
+    }>(apiKey, LIST_QUERY, { limit, skip, mine: mineOnly });
 
     if (!data.transcripts.length) break;
 

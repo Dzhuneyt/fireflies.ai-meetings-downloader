@@ -95,5 +95,7 @@ export interface CliOptions {
   output: string;
   force: boolean;
   includeMedia: boolean;
+  since: string | undefined;
+  mineOnly: boolean;
   help: boolean;
 }

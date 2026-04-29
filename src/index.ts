@@ -11,7 +11,7 @@ import {
   writeManifest,
 } from "./manifest.js";
 import { writeMeeting } from "./writer.js";
-import { parseArgs, printHelp, sleep } from "./utils.js";
+import { parseArgs, parseSince, printHelp, sleep } from "./utils.js";
 
 const RATE_LIMIT_DELAY = 1200; // 1.2 seconds between transcript fetches
 
@@ -52,16 +52,38 @@ async function main(): Promise<void> {
 
   const manifest = await readManifest(outputDir);
 
+  let sinceCutoff: number | undefined;
+  if (options.since) {
+    try {
+      sinceCutoff = parseSince(options.since);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error(message);
+      process.exit(1);
+    }
+    console.log(
+      `Filtering to meetings on or after ${new Date(sinceCutoff).toISOString()}`,
+    );
+  }
+
   console.log("Fetching meeting list...");
   let allMeetings;
   try {
-    allMeetings = await listAllTranscripts(apiKey);
+    allMeetings = await listAllTranscripts(apiKey, options.mineOnly);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`Failed to fetch meeting list:\n  ${message}`);
     process.exit(1);
   }
-  console.log(`Found ${allMeetings.length} meetings.\n`);
+  const totalFetched = allMeetings.length;
+  if (sinceCutoff !== undefined) {
+    allMeetings = allMeetings.filter((m) => m.date >= sinceCutoff!);
+    console.log(
+      `Found ${totalFetched} meetings, ${allMeetings.length} within --since window.\n`,
+    );
+  } else {
+    console.log(`Found ${allMeetings.length} meetings.\n`);
+  }
 
   let newCount = 0;
   let skippedCount = 0;
